@@ -1,0 +1,52 @@
+# --- Secrets (NEVER commit) ---
+.env
+.env.*
+*.env
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*token*
+*secret*
+*password*
+*credential*
+auth.json
+*.local.json
+
+# --- Heavy / binary artifacts (reference material lives elsewhere) ---
+*.pdf
+*.pptx
+*.mp3
+*.wav
+*.mp4
+*.png
+*.jpg
+*.gif
+*.zip
+*.tar.gz
+
+# --- Tooling / local only ---
+.agents/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Build / deps (future-proofing) ---
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+build/
+out/
+
+# --- Scratch / temp ---
+*.tmp
+*.log
+notes.md

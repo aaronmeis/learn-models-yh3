@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tencent Hy3 on OpenRouter</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212f;
+      --muted: #5f6f83;
+      --line: #d8e0e8;
+      --soft: #eef3f7;
+      --paper: #ffffff;
+      --mist: #f7fafc;
+      --green: #15976f;
+      --teal: #087f8c;
+      --navy: #193354;
+      --gold: #b8872f;
+      --red: #b54b45;
+      --shadow: 0 24px 60px rgba(23, 33, 47, 0.14);
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--mist);
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(216, 224, 232, 0.72);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 0 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 760;
+      color: var(--navy);
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--teal));
+      box-shadow: 0 10px 26px rgba(8, 127, 140, 0.23);
+      font-size: 13px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      padding: 9px 10px;
+      border-radius: 7px;
+      text-decoration: none;
+      color: #415066;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .nav-links a:hover {
+      background: #edf4f8;
+      color: var(--ink);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 680px;
+      overflow: hidden;
+      color: white;
+      background:
+        linear-gradient(118deg, rgba(21, 151, 111, 0.26) 0%, transparent 34%),
+        linear-gradient(292deg, rgba(184, 135, 47, 0.18) 0%, transparent 38%),
+        linear-gradient(132deg, #132238 0%, #174563 48%, #1b2d43 100%);
+    }
+
+    #model-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.72;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(19, 34, 56, 0.9) 0%, rgba(19, 34, 56, 0.62) 46%, rgba(19, 34, 56, 0.26) 100%),
+        linear-gradient(180deg, transparent 0%, rgba(247, 250, 252, 0.08) 78%, var(--mist) 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: var(--max);
+      margin: 0 auto;
+      min-height: 680px;
+      display: flex;
+      align-items: center;
+      padding: 96px 22px 126px;
+    }
+
+    .hero-copy {
+      width: min(760px, 100%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #dceef0;
+      font-size: 13px;
+      font-weight: 720;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #52d6a3;
+      box-shadow: 0 0 0 5px rgba(82, 214, 163, 0.15);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 840px;
+      font-size: clamp(44px, 7vw, 88px);
+      line-height: 0.95;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .hero-subtitle {
+      margin: 26px 0 0;
+      max-width: 690px;
+      color: #d8e5ec;
+      font-size: clamp(18px, 2.1vw, 24px);
+      line-height: 1.45;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 7px;
+      border: 1px solid transparent;
+      font-weight: 760;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.primary {
+      color: #112235;
+      background: #ffffff;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+    }
+
+    .button.secondary {
+      color: white;
+      border-color: rgba(255, 255, 255, 0.34);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 1px;
+      max-width: var(--max);
+      margin: -72px auto 0;
+      padding: 0 22px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .metric {
+      min-height: 118px;
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(216, 224, 232, 0.86);
+      box-shadow: 0 18px 42px rgba(23, 33, 47, 0.08);
+    }
+
+    .metric:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    .metric:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--ink);
+      font-size: clamp(25px, 3.2vw, 38px);
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 640;
+    }
+
+    main {
+      padding: 84px 0 76px;
+    }
+
+    section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    section + section {
+      margin-top: 70px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.04;
+      font-weight: 820;
+      color: var(--ink);
+    }
+
+    .section-note {
+      max-width: 480px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .model-card,
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 16px 42px rgba(23, 33, 47, 0.07);
+    }
+
+    .model-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 520px;
+      overflow: hidden;
+    }
+
+    .model-card.free {
+      border-top: 5px solid var(--green);
+    }
+
+    .model-card.standard {
+      border-top: 5px solid var(--gold);
+    }
+
+    .card-head {
+      padding: 24px 24px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 790;
+      color: #263549;
+      background: var(--soft);
+      border: 1px solid #dbe4ed;
+    }
+
+    .badge.green {
+      color: #0e684e;
+      background: #e4f6ef;
+      border-color: #bdebd7;
+    }
+
+    .badge.gold {
+      color: #775519;
+      background: #fbf1d9;
+      border-color: #efd99c;
+    }
+
+    .model-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .model-title h3 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .slug {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      color: var(--teal);
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .model-body {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .description {
+      margin: 0;
+      color: #46566c;
+      line-height: 1.58;
+      font-size: 15px;
+    }
+
+    .spec-list {
+      display: grid;
+      gap: 1px;
+      margin: 22px 0 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .spec {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      min-height: 46px;
+      background: white;
+    }
+
+    .spec:nth-child(even) {
+      background: #f8fbfd;
+    }
+
+    .spec dt,
+    .spec dd {
+      margin: 0;
+      padding: 12px 14px;
+      line-height: 1.35;
+      font-size: 14px;
+    }
+
+    .spec dt {
+      color: var(--muted);
+      font-weight: 720;
+      border-right: 1px solid var(--line);
+    }
+
+    .spec dd {
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 22px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      color: #263549;
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+    }
+
+    .comparison {
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 12px 32px rgba(23, 33, 47, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    th {
+      color: #263549;
+      background: #f0f5f8;
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 820;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td:first-child {
+      width: 210px;
+      color: var(--muted);
+      font-weight: 760;
+    }
+
+    .code-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .config-box {
+      padding: 22px;
+      background: #122135;
+      color: #eef7fb;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .config-box h3,
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .source-list a {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      text-decoration: none;
+      color: #223149;
+      font-weight: 720;
+      overflow-wrap: anywhere;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .attribute-ledger {
+      display: grid;
+      gap: 18px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 17px 18px;
+      font-weight: 790;
+      color: var(--ink);
+      background: #f3f7fa;
+      border-bottom: 1px solid var(--line);
+    }
+
+    details:not([open]) summary {
+      border-bottom: 0;
+    }
+
+    .json-block {
+      padding: 18px;
+      color: #233249;
+      background: #fbfdff;
+      max-height: 620px;
+      overflow: auto;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: white;
+      color: var(--muted);
+      padding: 28px 22px;
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 860px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .hero,
+      .hero-inner {
+        min-height: 650px;
+      }
+
+      .hero-inner {
+        padding-top: 70px;
+      }
+
+      .hero-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: -58px;
+      }
+
+      .metric:first-child,
+      .metric:last-child {
+        border-radius: 0;
+      }
+
+      .model-grid,
+      .code-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav-links a {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      .hero,
+      .hero-inner {
+        min-height: 620px;
+      }
+
+      .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .metric {
+        min-height: 96px;
+      }
+
+      .model-title {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .slug {
+        white-space: normal;
+      }
+
+      .spec {
+        grid-template-columns: 1fr;
+      }
+
+      .spec dt {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 7px;
+      }
+
+      .spec dd {
+        padding-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="Tencent Hy3 overview">
+        <span class="brand-mark">H3</span>
+        <span>Tencent Hy3 on OpenRouter</span>
+      </a>
+      <div class="nav-links">
+        <a href="#models">Models</a>
+        <a href="#comparison">Comparison</a>
+        <a href="#config">Config</a>
+        <a href="#attributes">Attributes</a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="top" class="hero">
+    <canvas id="model-canvas"></canvas>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> OpenRouter catalog snapshot: July 7, 2026</p>
+        <h1>Tencent Hy3 for long-context agent workflows</h1>
+        <p class="hero-subtitle">
+          A 295B-parameter mixture-of-experts model with free and standard OpenRouter routes,
+          256K-class context, tool support, structured outputs, and selectable reasoning effort.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#models">View model routes</a>
+          <a class="button secondary" href="https://openrouter.ai/tencent/hy3:free">Open free model</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-metrics" aria-label="Hy3 headline attributes">
+    <div class="metric"><strong>295B</strong><span>Total parameters</span></div>
+    <div class="metric"><strong>21B</strong><span>Active parameters</span></div>
+    <div class="metric"><strong>256K</strong><span>Context window class</span></div>
+    <div class="metric"><strong>$0</strong><span>Free route prompt and completion pricing</span></div>
+  </div>
+
+  <main>
+    <section id="models">
+      <div class="section-head">
+        <h2>Two OpenRouter routes</h2>
+        <p class="section-note">
+          Both routes target the same Tencent Hy3 model family. The free route maximizes cost control;
+          the standard route adds paid provider capacity and extra supported parameters.
+        </p>
+      </div>
+      <div class="model-grid" id="model-cards"></div>
+    </section>
+
+    <section id="comparison" class="comparison">
+      <div class="section-head">
+        <h2>Route comparison</h2>
+        <p class="section-note">
+          Values are normalized from OpenRouter's model catalog and model pages. Pricing is shown both
+          as raw catalog values and per-million token equivalents where useful.
+        </p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>tencent/hy3:free</th>
+              <th>tencent/hy3</th>
+            </tr>
+          </thead>
+          <tbody id="comparison-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="config">
+      <div class="section-head">
+        <h2>OpenRouter configuration</h2>
+        <p class="section-note">
+          The workspace is already set to the free model slug. OpenRouter is OpenAI-compatible, so
+          the model switch is the slug plus the OpenRouter base URL.
+        </p>
+      </div>
+      <div class="code-panel">
+        <div class="config-box">
+          <h3>.env</h3>
+          <pre>OPENROUTER_API_KEY=sk-or-v1-your-openrouter-key
+OPENAI_API_KEY=sk-or-v1-your-openrouter-key
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+MODEL=tencent/hy3:free</pre>
+        </div>
+        <div class="panel">
+          <h3>Source links</h3>
+          <ul class="source-list">
+            <li><a href="https://openrouter.ai/tencent/hy3:free">OpenRouter: Tencent Hy3 free</a></li>
+            <li><a href="https://openrouter.ai/tencent/hy3">OpenRouter: Tencent Hy3 standard</a></li>
+            <li><a href="https://openrouter.ai/api/v1/models">OpenRouter models API</a></li>
+            <li><a href="https://huggingface.co/tencent/Hy3">Tencent Hy3 model weights</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="attributes">
+      <div class="section-head">
+        <h2>Full attribute ledger</h2>
+        <p class="section-note">
+          This section preserves every catalog field used by the page, including null values,
+          supported parameter arrays, default parameters, provider limits, pricing, and reasoning metadata.
+        </p>
+      </div>
+      <div class="attribute-ledger" id="attribute-ledger"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Built as a static HTML landing page in C:\projects\codex\yh3_poc.</span>
+      <span>Data source: OpenRouter model catalog and Hy3 model pages.</span>
+    </div>
+  </footer>
+
+  <script>
+    const models = [
+      {
+        id: "tencent/hy3:free",
+        canonical_slug: "tencent/hy3-20260706",
+        hugging_face_id: "tencent/Hy3",
+        name: "Tencent: Hy3 (free)",
+        route_label: "Free route",
+        created: 1783344048,
+        released: "Jul 6, 2026",
+        model_profile: {
+          total_parameters: "295B",
+          active_parameters: "21B",
+          experts: 192,
+          routing: "top-8",
+          target_uses: ["reasoning", "agentic workflows", "coding", "document processing", "financial analysis", "game development", "frontend design"]
+        },
+        description: "Tencent Hy3 is a large mixture-of-experts text model built for reasoning, agent workflows, long documents, coding, and grounded production responses.",
+        context_length: 262144,
+        architecture: {
+          modality: "text->text",
+          input_modalities: ["text"],
+          output_modalities: ["text"],
+          tokenizer: "Other",
+          instruct_type: null
+        },
+        pricing: {
+          prompt: "0",
+          completion: "0"
+        },
+        price_per_1m_tokens: {
+          prompt: "$0.00",
+          completion: "$0.00",
+          input_cache_read: null
+        },
+        top_provider: {
+          context_length: 262144,
+          max_completion_tokens: 262144,
+          is_moderated: false
+        },
+        per_request_limits: null,
+        supported_parameters: [
+          "frequency_penalty",
+          "include_reasoning",
+          "max_tokens",
+          "presence_penalty",
+          "reasoning",
+          "repetition_penalty",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_k",
+          "top_p"
+        ],
+        default_parameters: {
+          temperature: 0.9,
+          top_p: 1,
+          top_k: null,
+          frequency_penalty: null,
+          presence_penalty: null,
+          repetition_penalty: null
+        },
+        supported_voices: null,
+        knowledge_cutoff: null,
+        expiration_date: null,
+        links: {
+          details: "/api/v1/models/tencent/hy3-20260706/endpoints",
+          openrouter: "https://openrouter.ai/tencent/hy3:free",
+          model_weights: "https://huggingface.co/tencent/Hy3"
+        },
+        reasoning: {
+          mandatory: false,
+          default_enabled: false,
+          supported_efforts: ["high", "low", "none"],
+          default_effort: "high"
+        }
+      },
+      {
+        id: "tencent/hy3",
+        canonical_slug: "tencent/hy3-20260706",
+        hugging_face_id: "tencent/Hy3",
+        name: "Tencent: Hy3",
+        route_label: "Standard route",
+        created: 1783344048,
+        released: "Jul 6, 2026",
+        model_profile: {
+          total_parameters: "295B",
+          active_parameters: "21B",
+          experts: 192,
+          routing: "top-8",
+          target_uses: ["reasoning", "agentic workflows", "coding", "document processing", "financial analysis", "game development", "frontend design"]
+        },
+        description: "Tencent Hy3 is a large mixture-of-experts text model built for reasoning, agent workflows, long documents, coding, and grounded production responses.",
+        context_length: 262144,
+        architecture: {
+          modality: "text->text",
+          input_modalities: ["text"],
+          output_modalities: ["text"],
+          tokenizer: "Other",
+          instruct_type: null
+        },
+        pricing: {
+          prompt: "0.0000002",
+          completion: "0.0000008",
+          input_cache_read: "0.0000005"
+        },
+        price_per_1m_tokens: {
+          prompt: "$0.20",
+          completion: "$0.80",
+          input_cache_read: "$0.50"
+        },
+        top_provider: {
+          context_length: 202752,
+          max_completion_tokens: 131072,
+          is_moderated: false
+        },
+        per_request_limits: null,
+        supported_parameters: [
+          "frequency_penalty",
+          "include_reasoning",
+          "logit_bias",
+          "max_tokens",
+          "min_p",
+          "presence_penalty",
+          "reasoning",
+          "repetition_penalty",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_k",
+          "top_p"
+        ],
+        default_parameters: {
+          temperature: 0.9,
+          top_p: 1,
+          top_k: null,
+          frequency_penalty: null,
+          presence_penalty: null,
+          repetition_penalty: null
+        },
+        supported_voices: null,
+        knowledge_cutoff: null,
+        expiration_date: null,
+        links: {
+          details: "/api/v1/models/tencent/hy3-20260706/endpoints",
+          openrouter: "https://openrouter.ai/tencent/hy3",
+          model_weights: "https://huggingface.co/tencent/Hy3"
+        },
+        reasoning: {
+          mandatory: false,
+          default_enabled: false,
+          supported_efforts: ["high", "low", "none"],
+          default_effort: "high"
+        }
+      }
+    ];
+
+    const cardHost = document.querySelector("#model-cards");
+    const comparisonBody = document.querySelector("#comparison-body");
+    const ledger = document.querySelector("#attribute-ledger");
+
+    function valueText(value) {
+      if (value === null) return "null";
+      if (Array.isArray(value)) return value.join(", ");
+      if (typeof value === "object") return Object.entries(value).map(([key, val]) => `${key}: ${valueText(val)}`).join("; ");
+      return String(value);
+    }
+
+    function spec(label, value) {
+      return `<div class="spec"><dt>${label}</dt><dd>${valueText(value)}</dd></div>`;
+    }
+
+    function renderCards() {
+      cardHost.innerHTML = models.map((model) => {
+        const isFree = model.id.endsWith(":free");
+        const pricing = isFree ? "Free prompt and completion" : `${model.price_per_1m_tokens.prompt} input / ${model.price_per_1m_tokens.completion} output per 1M`;
+        return `
+          <article class="model-card ${isFree ? "free" : "standard"}">
+            <div class="card-head">
+              <div class="badge-row">
+                <span class="badge ${isFree ? "green" : "gold"}">${model.route_label}</span>
+                <span class="badge">${model.architecture.modality}</span>
+                <span class="badge">${model.released}</span>
+              </div>
+              <div class="model-title">
+                <h3>${model.name}</h3>
+                <span class="slug">${model.id}</span>
+              </div>
+            </div>
+            <div class="model-body">
+              <p class="description">${model.description}</p>
+              <dl class="spec-list">
+                ${spec("Canonical slug", model.canonical_slug)}
+                ${spec("Hugging Face ID", model.hugging_face_id)}
+                ${spec("Context length", `${model.context_length.toLocaleString()} tokens`)}
+                ${spec("Top provider context", `${model.top_provider.context_length.toLocaleString()} tokens`)}
+                ${spec("Max completion", `${model.top_provider.max_completion_tokens.toLocaleString()} tokens`)}
+                ${spec("Pricing", pricing)}
+                ${spec("Reasoning efforts", model.reasoning.supported_efforts)}
+                ${spec("Default parameters", model.default_parameters)}
+              </dl>
+              <div class="card-footer">
+                <a class="link-button" href="${model.links.openrouter}">OpenRouter page</a>
+                <a class="link-button" href="${model.links.model_weights}">Model weights</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderComparison() {
+      const rows = [
+        ["ID", models[0].id, models[1].id],
+        ["Name", models[0].name, models[1].name],
+        ["Canonical slug", models[0].canonical_slug, models[1].canonical_slug],
+        ["Created timestamp", models[0].created, models[1].created],
+        ["Released", models[0].released, models[1].released],
+        ["Hugging Face ID", models[0].hugging_face_id, models[1].hugging_face_id],
+        ["Model profile", models[0].model_profile, models[1].model_profile],
+        ["Context length", `${models[0].context_length.toLocaleString()} tokens`, `${models[1].context_length.toLocaleString()} tokens`],
+        ["Architecture", models[0].architecture, models[1].architecture],
+        ["Raw pricing", models[0].pricing, models[1].pricing],
+        ["Price per 1M tokens", models[0].price_per_1m_tokens, models[1].price_per_1m_tokens],
+        ["Top provider", models[0].top_provider, models[1].top_provider],
+        ["Per request limits", models[0].per_request_limits, models[1].per_request_limits],
+        ["Supported parameters", models[0].supported_parameters, models[1].supported_parameters],
+        ["Default parameters", models[0].default_parameters, models[1].default_parameters],
+        ["Supported voices", models[0].supported_voices, models[1].supported_voices],
+        ["Knowledge cutoff", models[0].knowledge_cutoff, models[1].knowledge_cutoff],
+        ["Expiration date", models[0].expiration_date, models[1].expiration_date],
+        ["Reasoning", models[0].reasoning, models[1].reasoning],
+        ["Details endpoint", models[0].links.details, models[1].links.details]
+      ];
+
+      comparisonBody.innerHTML = rows.map(([label, freeValue, paidValue]) => `
+        <tr>
+          <td>${label}</td>
+          <td>${valueText(freeValue)}</td>
+          <td>${valueText(paidValue)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderLedger() {
+      ledger.innerHTML = models.map((model) => `
+        <details open>
+          <summary>${model.id}</summary>
+          <pre class="json-block">${JSON.stringify(model, null, 2)}</pre>
+        </details>
+      `).join("");
+    }
+
+    function renderCanvas() {
+      const canvas = document.querySelector("#model-canvas");
+      const ctx = canvas.getContext("2d");
+      const ratio = Math.max(1, window.devicePixelRatio || 1);
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const columns = 7;
+      const rows = 5;
+      const xGap = width / (columns + 1);
+      const yGap = height / (rows + 1);
+      const nodes = [];
+
+      for (let x = 1; x <= columns; x += 1) {
+        for (let y = 1; y <= rows; y += 1) {
+          nodes.push({
+            x: x * xGap + Math.sin((x * 19 + y * 11) * 0.4) * 18,
+            y: y * yGap + Math.cos((x * 7 + y * 17) * 0.4) * 16,
+            r: 2 + ((x + y) % 3)
+          });
+        }
+      }
+
+      ctx.lineWidth = 1;
+      nodes.forEach((node, index) => {
+        const next = nodes[index + rows] || nodes[index + 1];
+        if (!next) return;
+        ctx.strokeStyle = index % 4 === 0 ? "rgba(82, 214, 163, 0.38)" : "rgba(255, 255, 255, 0.2)";
+        ctx.beginPath();
+        ctx.moveTo(node.x, node.y);
+        ctx.bezierCurveTo(node.x + xGap * 0.32, node.y - 28, next.x - xGap * 0.28, next.y + 24, next.x, next.y);
+        ctx.stroke();
+      });
+
+      nodes.forEach((node, index) => {
+        ctx.fillStyle = index % 5 === 0 ? "rgba(245, 198, 98, 0.95)" : "rgba(210, 242, 244, 0.78)";
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.font = "700 13px Inter, system-ui, sans-serif";
+      ["top-8 routing", "192 experts", "structured outputs", "tool calls"].forEach((label, index) => {
+        const x = width * (0.58 + index * 0.075);
+        const y = height * (0.72 - index * 0.11);
+        ctx.fillText(label, x, y);
+      });
+    }
+
+    renderCards();
+    renderComparison();
+    renderLedger();
+    renderCanvas();
+    window.addEventListener("resize", renderCanvas);
+  </script>
+</body>
+</html>
