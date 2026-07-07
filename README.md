@@ -1,6 +1,17 @@
-# Tencent Hy3 on OpenRouter — POC
+# Tencent Hy3 on OpenRouter
 
-A self-contained static HTML page documenting the Tencent Hy3 model family (295B MoE) as exposed through OpenRouter in July 2026.
+> **Tencent Hy3 on OpenRouter – free vs standard routes, specs, and config**
+
+<p align="center">
+  <a href="https://aaronmeis.github.io/learn-models-yh3/">
+    <strong>🚀 View Live Demo</strong>
+  </a>
+</p>
+
+> **Repo description (copy for GitHub):**  
+> `Tencent Hy3 on OpenRouter – free vs standard routes, specs, and config`
+
+A self-contained static HTML page documenting the Tencent Hy3 model family (295B MoE) as exposed through OpenRouter.
 
 ## What this is
 
@@ -53,6 +64,18 @@ A self-contained static HTML page documenting the Tencent Hy3 model family (295B
 
 OpenRouter model catalog snapshot dated around July 6–7, 2026.
 
+## GitHub Pages
+
+This repo is designed to be hosted with GitHub Pages. Once you enable Pages (Settings → Pages → Deploy from branch → main / root), the `index.html` becomes the live landing page at:
+
+```
+https://aaronmeis.github.io/learn-models-yh3/
+```
+
+**Important:** Replace `YOUR_USERNAME` and `learn-models-yh3` with your actual GitHub username and repository name.
+
+After enabling Pages, go to **Settings → General** and set the same URL as the **Website** in the About section on the right sidebar.
+
 ---
 
-Built as a quick POC in `C:\projects\codex\yh3_poc`.
+**Tip:** To make the live site even more discoverable, add the GitHub Pages URL as the "Website" link in the repo's About section.
