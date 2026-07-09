@@ -1012,6 +1012,11 @@ MODEL=tencent/hy3:free</pre>
       return String(value);
     }
 
+    function tokenText(value) {
+      if (value === null) return "Not specified";
+      return `${value.toLocaleString()} tokens`;
+    }
+
     function spec(label, value) {
       return `<div class="spec"><dt>${label}</dt><dd>${valueText(value)}</dd></div>`;
     }
@@ -1038,9 +1043,9 @@ MODEL=tencent/hy3:free</pre>
               <dl class="spec-list">
                 ${spec("Canonical slug", model.canonical_slug)}
                 ${spec("Hugging Face ID", model.hugging_face_id)}
-                ${spec("Context length", `${model.context_length.toLocaleString()} tokens`)}
-                ${spec("Top provider context", `${model.top_provider.context_length.toLocaleString()} tokens`)}
-                ${spec("Max completion", `${model.top_provider.max_completion_tokens.toLocaleString()} tokens`)}
+                ${spec("Context length", tokenText(model.context_length))}
+                ${spec("Top provider context", tokenText(model.top_provider.context_length))}
+                ${spec("Max completion", tokenText(model.top_provider.max_completion_tokens))}
                 ${spec("Pricing", pricing)}
                 ${spec("Reasoning efforts", model.reasoning.supported_efforts)}
                 ${spec("Default parameters", model.default_parameters)}
