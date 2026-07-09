@@ -735,7 +735,7 @@
     <canvas id="model-canvas"></canvas>
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span> OpenRouter catalog snapshot: July 7, 2026</p>
+        <p class="eyebrow"><span class="status-dot"></span> OpenRouter catalog snapshot: July 8, 2026</p>
         <h1>Tencent Hy3 for long-context agent workflows</h1>
         <p class="hero-subtitle">
           A 295B-parameter mixture-of-experts model with free and standard OpenRouter routes,
@@ -832,7 +832,7 @@ MODEL=tencent/hy3:free</pre>
 
   <footer class="footer">
     <div class="footer-inner">
-      <span>Built as a static HTML landing page in C:\projects\codex\yh3_poc.</span>
+      <span>Built as a static HTML landing page.</span>
       <span>Data source: OpenRouter model catalog and Hy3 model pages.</span>
     </div>
   </footer>
@@ -854,7 +854,7 @@ MODEL=tencent/hy3:free</pre>
           routing: "top-8",
           target_uses: ["reasoning", "agentic workflows", "coding", "document processing", "financial analysis", "game development", "frontend design"]
         },
-        description: "Tencent Hy3 is a large mixture-of-experts text model built for reasoning, agent workflows, long documents, coding, and grounded production responses.",
+        description: "Hy3 is a 295B-parameter mixture-of-experts model from Tencent built for reasoning, agentic workflows, and real-world production use.",
         context_length: 262144,
         architecture: {
           modality: "text->text",
@@ -904,7 +904,7 @@ MODEL=tencent/hy3:free</pre>
         },
         supported_voices: null,
         knowledge_cutoff: null,
-        expiration_date: null,
+        expiration_date: "2026-07-21",
         links: {
           details: "/api/v1/models/tencent/hy3-20260706/endpoints",
           openrouter: "https://openrouter.ai/tencent/hy3:free",
@@ -932,7 +932,7 @@ MODEL=tencent/hy3:free</pre>
           routing: "top-8",
           target_uses: ["reasoning", "agentic workflows", "coding", "document processing", "financial analysis", "game development", "frontend design"]
         },
-        description: "Tencent Hy3 is a large mixture-of-experts text model built for reasoning, agent workflows, long documents, coding, and grounded production responses.",
+        description: "Hy3 is a 295B-parameter mixture-of-experts model from Tencent built for reasoning, agentic workflows, and real-world production use.",
         context_length: 262144,
         architecture: {
           modality: "text->text",
@@ -942,18 +942,18 @@ MODEL=tencent/hy3:free</pre>
           instruct_type: null
         },
         pricing: {
-          prompt: "0.0000002",
-          completion: "0.0000008",
-          input_cache_read: "0.0000005"
+          prompt: "0.00000014",
+          completion: "0.00000058",
+          input_cache_read: "0.000000035"
         },
         price_per_1m_tokens: {
-          prompt: "$0.20",
-          completion: "$0.80",
-          input_cache_read: "$0.50"
+          prompt: "$0.14",
+          completion: "$0.58",
+          input_cache_read: "$0.035"
         },
         top_provider: {
-          context_length: 202752,
-          max_completion_tokens: 131072,
+          context_length: 262144,
+          max_completion_tokens: null,
           is_moderated: false
         },
         per_request_limits: null,
@@ -966,6 +966,7 @@ MODEL=tencent/hy3:free</pre>
           "presence_penalty",
           "reasoning",
           "repetition_penalty",
+          "response_format",
           "seed",
           "stop",
           "structured_outputs",
